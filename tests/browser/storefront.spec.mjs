@@ -2,12 +2,19 @@ import {test,expect} from '@playwright/test';
 import {readFile} from 'node:fs/promises';
 import {CART_KEY} from '../../assets/cart.mjs';
 const products=JSON.parse(await readFile(new URL('../../data/products.json',import.meta.url)));
+function contrastAgainstBackground(el){
+ const style=getComputedStyle(el);
+ const background=style.backgroundColor==='rgba(0, 0, 0, 0)'?getComputedStyle(document.documentElement).backgroundColor:style.backgroundColor;
+ function luminance(color){const rgb=color.match(/[\d.]+/g).slice(0,3).map(Number).map(n=>n/255).map(n=>n<=.04045?n/12.92:((n+.055)/1.055)**2.4);return rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722;}
+ const a=luminance(style.color),b=luminance(background);return (Math.max(a,b)+.05)/(Math.min(a,b)+.05);
+}
 test('responsive storefront renders real assets, metadata and no overflow',async({page},testInfo)=>{
  const errors=[];page.on('pageerror',e=>errors.push(e.message));
  const broken=[];page.on('response',r=>{if(r.status()>=400)broken.push(r.url());});
  await page.goto('/');await expect(page.locator('#result-count')).toContainText('4 productos');await page.evaluate(()=>document.fonts.ready);
  await expect(page).toHaveTitle(/Componentes para PC en Venezuela/);
  await expect(page.locator('h1')).toHaveCount(1);
+ expect(await page.locator('.category-links .active').evaluate(contrastAgainstBackground)).toBeGreaterThanOrEqual(4.5);
  await page.locator('.site-footer').scrollIntoViewIfNeeded();await page.waitForFunction(()=>[...document.images].every(i=>i.complete&&i.naturalWidth>0));await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));await page.evaluate(()=>Promise.all(document.getAnimations().map(a=>a.finished.catch(()=>{}))));
  expect(await page.locator('html').getAttribute('lang')).toBe('es-VE');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
@@ -58,7 +65,7 @@ test('cart totals, persistence, optional details and WhatsApp payload are correc
 test('static product and category pages work without JavaScript',async({browser},testInfo)=>{
  const context=await browser.newContext({javaScriptEnabled:false,viewport:testInfo.project.use.viewport});const page=await context.newPage();
  for(const p of products){await page.goto('http://127.0.0.1:4173/productos/'+p.id+'/');await expect(page.locator('h1')).toHaveText(p.name);await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href','https://anyelopetit.github.io/naiguastore-codex/productos/'+p.id+'/');expect(await page.locator('img').evaluateAll(items=>items.every(i=>i.complete&&i.naturalWidth>0))).toBeTruthy();}
- await page.goto('http://127.0.0.1:4173/categorias/memoria-ram/');await expect(page.locator('[data-product]')).toHaveCount(1);
+ await page.goto('http://127.0.0.1:4173/categorias/memoria-ram/');await expect(page.locator('[data-product]')).toHaveCount(1);expect(await page.locator('.noscript').evaluate(contrastAgainstBackground)).toBeGreaterThanOrEqual(4.5);
  await page.screenshot({path:testInfo.outputPath('category.png'),fullPage:true});await context.close();
 });
 test('corrupt stored cart is discarded and dialog keyboard focus stays inside',async({page})=>{
