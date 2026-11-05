@@ -8,7 +8,7 @@ test('responsive storefront renders real assets, metadata and no overflow',async
  await page.goto('/');await expect(page.locator('#result-count')).toContainText('4 productos');await page.evaluate(()=>document.fonts.ready);
  await expect(page).toHaveTitle(/Componentes para PC en Venezuela/);
  await expect(page.locator('h1')).toHaveCount(1);
- await page.locator('.site-footer').scrollIntoViewIfNeeded();await page.waitForFunction(()=>[...document.images].every(i=>i.complete&&i.naturalWidth>0));await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));
+ await page.locator('.site-footer').scrollIntoViewIfNeeded();await page.waitForFunction(()=>[...document.images].every(i=>i.complete&&i.naturalWidth>0));await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));await page.evaluate(()=>Promise.all(document.getAnimations().map(a=>a.finished.catch(()=>{}))));
  expect(await page.locator('html').getAttribute('lang')).toBe('es-VE');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
  expect(await page.locator('img').evaluateAll(images=>images.every(i=>i.complete&&i.naturalWidth>0))).toBeTruthy();
@@ -39,7 +39,8 @@ test('cart totals, persistence, optional details and WhatsApp payload are correc
  await expect(page.locator('#message-preview')).toContainText('Por favor, confirmen');
  await page.locator('[data-quantity="samsung-990-pro-2tb"]').fill('2');await page.locator('[data-quantity="samsung-990-pro-2tb"]').press('Tab');
  await expect(page.locator('#cart-total')).toContainText('454,97');
- await page.screenshot({path:testInfo.outputPath('cart.png'),fullPage:true});
+ await page.locator('.cart-content').evaluate(el=>el.scrollTop=0);await page.evaluate(()=>Promise.all(document.getAnimations().map(a=>a.finished.catch(()=>{}))));await page.screenshot({path:testInfo.outputPath('cart.png')});
+ await page.locator('button[type="submit"]').filter({hasText:'Continuar en WhatsApp'}).scrollIntoViewIfNeeded();await page.screenshot({path:testInfo.outputPath('cart-checkout.png')});
  await page.evaluate(()=>{window.open=(url)=>{window.__outbound=url;return null;};});
  await page.locator('button[type="submit"]').filter({hasText:'Continuar en WhatsApp'}).click();
  const outbound=await page.evaluate(()=>window.__outbound);const url=new URL(outbound);
