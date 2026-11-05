@@ -23,6 +23,14 @@ function setQuantity(id,quantity,focusKind){const row=cart.find(r=>r.id===id);if
 function openCart(){dialog.showModal();document.documentElement.classList.add('dialog-open');}
 function closeCart(){dialog.close();}
 dialog.addEventListener('close',()=>document.documentElement.classList.remove('dialog-open'));
+dialog.addEventListener('keydown',event=>{
+ if(event.key!=='Tab')return;
+ const controls=[...dialog.querySelectorAll('button:not(:disabled),a[href],input:not(:disabled),select:not(:disabled),textarea:not(:disabled),summary')].filter(el=>el.getClientRects().length>0);
+ const first=controls[0],last=controls.at(-1);
+ if(!first){event.preventDefault();return;}
+ if(event.shiftKey&&(document.activeElement===first||!dialog.contains(document.activeElement))){event.preventDefault();last.focus();}
+ else if(!event.shiftKey&&(document.activeElement===last||!dialog.contains(document.activeElement))){event.preventDefault();first.focus();}
+});
 dialog.addEventListener('click',e=>{if(e.target===dialog){const r=dialog.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)closeCart();}});
 document.addEventListener('click',e=>{
  const add=e.target.closest('[data-add]');if(add){const p=products.find(p=>p.id===add.dataset.add);if(!p)return;const row=cart.find(r=>r.id===p.id);if(row&&row.quantity>=MAX_QUANTITY){announce(`Máximo ${MAX_QUANTITY} unidades por referencia.`);return;}if(row)row.quantity++;else cart.push({id:p.id,quantity:1});commit();announce(`${p.name} agregado.${storageAvailable?'':' El carrito se conservará solo mientras esta página siga abierta.'}`);return;}
