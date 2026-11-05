@@ -5,7 +5,7 @@ const dialog = $('#cart');
 let products=[], cart=[], filter='all', storageAvailable=true, toastTimer;
 function announce(text) {const node=$('#toast');node.textContent=text;node.classList.add('visible');clearTimeout(toastTimer);toastTimer=setTimeout(()=>node.classList.remove('visible'),3200);}
 function details() {return Object.fromEntries(new FormData($('#request-form')));}
-function updatePreview(){try {$('#message-preview').textContent=messageFor(cart,products,details());}catch {$('#message-preview').textContent='';}}
+function updatePreview(){$('#whatsapp-retry').hidden=true;$('#form-error').textContent='';try {$('#message-preview').textContent=messageFor(cart,products,details());}catch {$('#message-preview').textContent='';}}
 function save(){try{localStorage.setItem(CART_KEY,JSON.stringify(cart));}catch{storageAvailable=false;}}
 function renderCart(){
  const quantity=cart.reduce((n,p)=>n+p.quantity,0);
@@ -41,7 +41,7 @@ document.addEventListener('click',e=>{
  const category=e.target.closest('[data-filter]');if(category){e.preventDefault();filter=category.dataset.filter;applyFilters();}
 });
 dialog.addEventListener('change',e=>{if(e.target.matches('[data-quantity]'))setQuantity(e.target.dataset.quantity,e.target.valueAsNumber,'input');});
-$('#request-form').addEventListener('input',()=>{updatePreview();$('#whatsapp-retry').hidden=true;$('#form-error').textContent='';});
+$('#request-form').addEventListener('input',updatePreview);
 $('#request-form').addEventListener('submit',e=>{e.preventDefault();try{const text=messageFor(cart,products,details());const url=whatsappURL(text);const retry=$('#whatsapp-retry');retry.href=url;retry.hidden=false;if(url.length>7000){$('#form-error').textContent='Tu selección es extensa. Copia el resumen y pégalo en el chat para conservar todos los detalles.';retry.href='https://wa.me/584146380868';return;}window.open(url,'_blank','noopener,noreferrer');$('#form-error').textContent='Tu mensaje está preparado. Si WhatsApp no se abrió, usa el enlace de abajo o copia el resumen.';}catch(err){$('#form-error').textContent=err.message;}});
 $('#copy-message').addEventListener('click',async()=>{try{const text=messageFor(cart,products,details());await navigator.clipboard.writeText(text);announce('Resumen copiado. Puedes pegarlo en WhatsApp.');}catch{$('.message-preview').open=true;$('#form-error').textContent='No pudimos copiar automáticamente. Selecciona y copia el texto de la vista previa.';}});
 const normalize=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('es');

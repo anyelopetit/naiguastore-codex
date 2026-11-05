@@ -48,6 +48,8 @@ test('cart totals, persistence, optional details and WhatsApp payload are correc
  expect(url.origin+url.pathname).toBe('https://wa.me/584146380868');
  expect(url.searchParams.get('text')).toContain('Cantidad: 2');expect(url.searchParams.get('text')).toContain('Prueba de interfaz');
  expect(url.searchParams.get('text')).toContain('Importe final: por confirmar');
+ await page.locator('[data-quantity="samsung-990-pro-2tb"]').fill('1');await page.locator('[data-quantity="samsung-990-pro-2tb"]').press('Tab');await expect(page.locator('#whatsapp-retry')).toBeHidden();
+ await page.locator('[data-quantity="samsung-990-pro-2tb"]').fill('2');await page.locator('[data-quantity="samsung-990-pro-2tb"]').press('Tab');
  await page.keyboard.press('Escape');await expect(page.locator('#cart')).not.toBeVisible();
  await page.reload();await expect(page.locator('[data-cart-count]')).toHaveText('3');await page.locator('[data-cart]').click();
  await page.locator('[data-remove="samsung-990-pro-2tb"]').click();await expect(page.locator('#cart-total')).toContainText('114,99');
