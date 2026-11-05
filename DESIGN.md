@@ -29,3 +29,14 @@ Reference prices must be labeled. No synthetic scarcity or guarantee durations. 
 
 ## Verification boundaries
 Taste's local Chrome inspector could not launch in this sandbox. Browser screenshots and interactions are checked through Playwright in CI. Do not describe local inspector results as passed. Manufacturer images are source assets credited in /fuentes/ and docs/ASSETS.md, not proof of owned stock.
+
+## Brand correction requested by the owner
+
+The owner rejected the paper-colored editorial world: it did not read as NaiguaStore or PC hardware retail. This correction supersedes those palette and type choices while retaining static content, accessible shopping interactions and the same WhatsApp flow.
+
+- The actual supplied emblem is the first identity asset, visible in header and footer. The white Naigua / gold Store lettering follows the supplied logo rather than a generic wordmark with a dot.
+- Main background #080F1B, surfaces #142237, text #EDF3FB, secondary text #B5C3D5. Gold #E0BB65 is the brand accent; blue #225DC0 carries shopping controls. Light image stages remain only behind merchandise for clear product recognition.
+- Exo 2 variable is the hardware-facing display font; Libre Franklin remains for readable shopping UI. Besley is retained only in the brand name to echo the original emblem's serif lettering.
+- An ASUS manufacturer photograph of an RTX 4060 is the hero, explicitly identified as illustrative. No invented custom-PC photograph or inventory claim. Direct component category links make the store's domain recognizable without reading editorial prose.
+- Search sits in the homepage header. The first screen explicitly says hardware for PC and names CPUs, GPUs, RAM and SSDs. No animated RGB backgrounds, artificial scarcity, competing mascots or decorative circuitry.
+- Existing product and category URLs, metadata, specifications, reference-price disclosures and checkout semantics remain intact.

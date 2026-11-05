@@ -11,3 +11,7 @@ All component photos are manufacturer catalog assets used to illustrate their na
 - Besley and Libre Franklin: Google Fonts repositories, SIL Open Font License; licenses in assets/*-OFL.txt.
 
 UI icons are simple original stroked SVG geometry. No third-party icon runtime or remote font loader.
+
+## Brand correction assets
+- `hardware-hero.webp`: ASUS Dual GeForce RTX 4060 manufacturer image, https://dlcdnwebimgs.asus.com/files/media/2e19c920-6dec-41c8-a706-3ae43dd88c19/v1/img/kv.png ; original product source is listed above. Clearly illustrative, not a photo of stock.
+- `exo2.ttf`: Exo 2 variable font from Google Fonts, https://github.com/google/fonts/tree/main/ofl/exo2 ; SIL OFL license in assets/exo2-OFL.txt.
