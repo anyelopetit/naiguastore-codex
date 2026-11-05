@@ -11,6 +11,7 @@ test('responsive storefront renders real assets, metadata and no overflow',async
  await page.locator('.site-footer').scrollIntoViewIfNeeded();await page.waitForFunction(()=>[...document.images].every(i=>i.complete&&i.naturalWidth>0));await page.evaluate(()=>scrollTo({top:0,behavior:'instant'}));await page.evaluate(()=>Promise.all(document.getAnimations().map(a=>a.finished.catch(()=>{}))));
  expect(await page.locator('html').getAttribute('lang')).toBe('es-VE');
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBeTruthy();
+ expect(await page.locator('h1').evaluate(el=>el.getBoundingClientRect().height<=parseFloat(getComputedStyle(el).lineHeight)*2+2)).toBeTruthy();
  expect(await page.locator('img').evaluateAll(images=>images.every(i=>i.complete&&i.naturalWidth>0))).toBeTruthy();
  await page.screenshot({path:testInfo.outputPath('home.png'),fullPage:true});
  await page.emulateMedia({reducedMotion:'reduce'});await page.reload();
