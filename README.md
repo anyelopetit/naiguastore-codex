@@ -20,7 +20,7 @@ npx playwright install chromium
 npx playwright test
 ```
 
-The CI workflow builds and tests in Chromium at 1440, 768 and 390px, uploads screenshots/reports, and deploys only on success.
+The CI workflow uses the Chrome already installed on the Ubuntu 24.04 runner, tests at 1440, 768 and 390px, uploads screenshots/reports, and deploys only on success.
 
 ## Maintain
 
